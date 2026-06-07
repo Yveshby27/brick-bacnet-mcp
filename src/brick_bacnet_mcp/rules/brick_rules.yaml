@@ -1,0 +1,201 @@
+# Starter Brick rule library for brick-bacnet-mcp v0.1.
+#
+# Each rule has:
+#   id            stable identifier for the rule (used in TaggedObject.rule_matched)
+#   pattern       regex matched against BACnet object name (use (?i) for case-insensitive)
+#   units         optional list of unit substrings; empty means unit is not a constraint
+#   object_types  optional list of BACnet object types this rule applies to
+#   brick_class   Brick class fragment to assign on match
+#
+# Pattern style note: BACnet object names in industrial deployments routinely
+# carry numeric suffixes like `OAT_001`, `zone_temp_3`, `SF_status`. Regex `\b`
+# does NOT fire between a letter and `_` (because `_` is a word character),
+# which would cause patterns like `\bOAT\b` to MISS `OAT_001`. The rule library
+# uses `(?<![A-Za-z])(...)(?![A-Za-z])` (negative lookbehind + lookahead for
+# letters) to treat underscores, digits, and hyphens as valid separators while
+# still rejecting `BOATING` matching `OAT` and similar false positives.
+#
+# Rules are evaluated in file order; first match wins.
+
+# ---------- Outside / Outdoor ----------
+- id: brick:oat
+  pattern: '(?i)(?<![A-Za-z])(oat|outside[_ ]?air[_ ]?temp|outsideair|oa[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Outside_Air_Temperature_Sensor
+
+- id: brick:oah
+  pattern: '(?i)(?<![A-Za-z])(oah|outside[_ ]?air[_ ]?(humidity|rh)|outsideairhumidity)(?![A-Za-z])'
+  units: ['%', 'percent', 'percentRelativeHumidity']
+  brick_class: Outside_Air_Humidity_Sensor
+
+# ---------- Mixed air ----------
+- id: brick:mat
+  pattern: '(?i)(?<![A-Za-z])(mat|mixed[_ ]?air[_ ]?temp|mixedairtemp)(?![A-Za-z])'
+  brick_class: Mixed_Air_Temperature_Sensor
+
+- id: brick:mad
+  pattern: '(?i)(?<![A-Za-z])(mad|mixed[_ ]?air[_ ]?damper|oa[_ ]?damper|outside[_ ]?air[_ ]?damper)(?![A-Za-z])'
+  brick_class: Outside_Air_Damper
+
+# ---------- Discharge / Supply ----------
+- id: brick:dat
+  pattern: '(?i)(?<![A-Za-z])(dat|discharge[_ ]?air[_ ]?temp|sat|supply[_ ]?air[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Supply_Air_Temperature_Sensor
+
+- id: brick:saf
+  pattern: '(?i)(?<![A-Za-z])(saf|supply[_ ]?air[_ ]?flow|supply[_ ]?fan[_ ]?airflow)(?![A-Za-z])'
+  brick_class: Supply_Air_Flow_Sensor
+
+- id: brick:supply_fan
+  pattern: '(?i)(?<![A-Za-z])(supply[_ ]?fan|sa[_ ]?fan|sf)(?![A-Za-z])'
+  object_types: [binary-input, binary-output, binary-value, multi-state-input, multi-state-output]
+  brick_class: Supply_Fan
+
+# ---------- Return ----------
+- id: brick:rat
+  pattern: '(?i)(?<![A-Za-z])(rat|return[_ ]?air[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Return_Air_Temperature_Sensor
+
+- id: brick:rah
+  pattern: '(?i)(?<![A-Za-z])(rah|return[_ ]?air[_ ]?(humidity|rh))(?![A-Za-z])'
+  units: ['%', 'percent']
+  brick_class: Return_Air_Humidity_Sensor
+
+- id: brick:return_fan
+  pattern: '(?i)(?<![A-Za-z])(return[_ ]?fan|ra[_ ]?fan|rf)(?![A-Za-z])'
+  brick_class: Return_Fan
+
+# ---------- Zone / Room / Space ----------
+- id: brick:zone_temp
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?temp|znt|space[_ ]?temp|room[_ ]?temp|rmt)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Zone_Air_Temperature_Sensor
+
+- id: brick:zone_setpoint
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?(temp[_ ]?)?(setpoint|sp|stpt)|znsp)(?![A-Za-z])'
+  brick_class: Zone_Air_Temperature_Setpoint
+
+- id: brick:zone_humidity
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?(humidity|rh)|space[_ ]?humidity)(?![A-Za-z])'
+  brick_class: Zone_Air_Humidity_Sensor
+
+- id: brick:zone_co2
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?co2|co2|space[_ ]?co2)(?![A-Za-z])'
+  units: ['ppm', 'partsPerMillion']
+  brick_class: CO2_Sensor
+
+- id: brick:occ_sensor
+  pattern: '(?i)(?<![A-Za-z])(occupancy|occ[_ ]?sensor|occupied)(?![A-Za-z])'
+  object_types: [binary-input, binary-value, multi-state-input, multi-state-value]
+  brick_class: Occupancy_Sensor
+
+# ---------- VAV box ----------
+- id: brick:vav_damper
+  pattern: '(?i)(?<![A-Za-z])(vav[_ ]?damper|damper[_ ]?pos(ition)?|dpr[_ ]?pos)(?![A-Za-z])'
+  brick_class: Damper_Position_Sensor
+
+- id: brick:vav_airflow
+  pattern: '(?i)(?<![A-Za-z])(vav[_ ]?(airflow|flow)|box[_ ]?airflow)(?![A-Za-z])'
+  brick_class: Supply_Air_Flow_Sensor
+
+- id: brick:reheat_valve
+  pattern: '(?i)(?<![A-Za-z])(reheat[_ ]?valve|rh[_ ]?valve|hw[_ ]?valve[_ ]?pos)(?![A-Za-z])'
+  brick_class: Reheat_Valve
+
+# ---------- Chilled / Hot water ----------
+- id: brick:chw_supply
+  pattern: '(?i)(?<![A-Za-z])(chw[_ ]?supply|chws[_ ]?temp|chilled[_ ]?water[_ ]?supply)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Chilled_Water_Supply_Temperature_Sensor
+
+- id: brick:chw_return
+  pattern: '(?i)(?<![A-Za-z])(chw[_ ]?return|chwr[_ ]?temp|chilled[_ ]?water[_ ]?return)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Chilled_Water_Return_Temperature_Sensor
+
+- id: brick:hw_supply
+  pattern: '(?i)(?<![A-Za-z])(hw[_ ]?supply|hws[_ ]?temp|hot[_ ]?water[_ ]?supply)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Hot_Water_Supply_Temperature_Sensor
+
+- id: brick:hw_return
+  pattern: '(?i)(?<![A-Za-z])(hw[_ ]?return|hwr[_ ]?temp|hot[_ ]?water[_ ]?return)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Hot_Water_Return_Temperature_Sensor
+
+# ---------- Chillers / Boilers ----------
+- id: brick:chiller_status
+  pattern: '(?i)(?<![A-Za-z])(chiller[_ ]?(status|state|run))(?![A-Za-z])'
+  object_types: [binary-input, binary-value, multi-state-input, multi-state-value]
+  brick_class: Chiller_Status
+
+- id: brick:boiler_status
+  pattern: '(?i)(?<![A-Za-z])(boiler[_ ]?(status|state|run))(?![A-Za-z])'
+  object_types: [binary-input, binary-value, multi-state-input, multi-state-value]
+  brick_class: Boiler_Status
+
+# ---------- Pumps ----------
+- id: brick:chw_pump
+  pattern: '(?i)(?<![A-Za-z])(chw[_ ]?pump|chilled[_ ]?water[_ ]?pump)(?![A-Za-z])'
+  brick_class: Chilled_Water_Pump
+
+- id: brick:hw_pump
+  pattern: '(?i)(?<![A-Za-z])(hw[_ ]?pump|hot[_ ]?water[_ ]?pump)(?![A-Za-z])'
+  brick_class: Hot_Water_Pump
+
+# ---------- Lighting ----------
+- id: brick:light_status
+  pattern: '(?i)(?<![A-Za-z])(light[_ ]?(status|state)|lighting[_ ]?status|luminaire[_ ]?status)(?![A-Za-z])'
+  object_types: [binary-input, binary-output, binary-value]
+  brick_class: Luminaire_Status
+
+- id: brick:light_dim
+  pattern: '(?i)(?<![A-Za-z])(dim(ming)?[_ ]?(level|setpoint|sp)|light[_ ]?level)(?![A-Za-z])'
+  brick_class: Luminaire_Dimming_Level_Sensor
+
+# ---------- Metering ----------
+- id: brick:electric_meter
+  pattern: '(?i)(?<![A-Za-z])(electric[_ ]?(meter|kwh|consumption)|kwh[_ ]?meter|power[_ ]?meter)(?![A-Za-z])'
+  units: ['kWh', 'Wh', 'MWh', 'kW', 'watt', 'kilowatt']
+  brick_class: Electrical_Power_Sensor
+
+- id: brick:water_meter
+  pattern: '(?i)(?<![A-Za-z])(water[_ ]?(meter|consumption|flow))(?![A-Za-z])'
+  units: ['gallons', 'liters', 'm3', 'gpm', 'L/s']
+  brick_class: Water_Flow_Sensor
+
+- id: brick:gas_meter
+  pattern: '(?i)(?<![A-Za-z])(gas[_ ]?(meter|consumption|flow))(?![A-Za-z])'
+  units: ['therms', 'kBtu', 'cf', 'cfm', 'm3']
+  brick_class: Gas_Flow_Sensor
+
+# ---------- Air handler equipment-level ----------
+- id: brick:ahu
+  pattern: '(?i)(?<![A-Za-z])(ahu|air[_ ]?handler|air[_ ]?handling[_ ]?unit)(?![A-Za-z])'
+  brick_class: AHU
+
+- id: brick:rtu
+  pattern: '(?i)(?<![A-Za-z])(rtu|rooftop[_ ]?unit|roof[_ ]?top[_ ]?unit)(?![A-Za-z])'
+  brick_class: RTU
+
+- id: brick:fcu
+  pattern: '(?i)(?<![A-Za-z])(fcu|fan[_ ]?coil[_ ]?unit)(?![A-Za-z])'
+  brick_class: FCU
+
+# ---------- Pressure / Differential ----------
+- id: brick:duct_pressure
+  pattern: '(?i)(?<![A-Za-z])(duct[_ ]?(static[_ ]?)?pressure|dsp|static[_ ]?pressure)(?![A-Za-z])'
+  units: ['inWC', '"wc', 'inH2O', 'Pa', 'kPa']
+  brick_class: Static_Pressure_Sensor
+
+- id: brick:building_pressure
+  pattern: '(?i)(?<![A-Za-z])(building[_ ]?pressure|bldg[_ ]?pressure)(?![A-Za-z])'
+  brick_class: Building_Air_Static_Pressure_Sensor
+
+# ---------- Generic temperature catch-all (lowest priority) ----------
+- id: brick:generic_temp
+  pattern: '(?i)(?<![A-Za-z])(temp(erature)?|tmp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  brick_class: Temperature_Sensor

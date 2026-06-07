@@ -1,0 +1,214 @@
+# Starter Project Haystack rule library for brick-bacnet-mcp v0.1.
+#
+# Pattern style note: see brick_rules.yaml header. We use
+# `(?<![A-Za-z])(...)(?![A-Za-z])` instead of `\b...\b` because BACnet object
+# names commonly carry `_NNN` numeric suffixes which would defeat `\b` (since
+# `_` is a regex word character).
+#
+# Rules evaluated in file order; first match wins.
+
+# ---------- Outside ----------
+- id: hs:oat
+  pattern: '(?i)(?<![A-Za-z])(oat|outside[_ ]?air[_ ]?temp|outsideair|oa[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  haystack_tags: [point, sensor, outside, air, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:oah
+  pattern: '(?i)(?<![A-Za-z])(oah|outside[_ ]?air[_ ]?(humidity|rh))(?![A-Za-z])'
+  units: ['%', 'percent']
+  haystack_tags: [point, sensor, outside, air, humidity]
+  haystack_kind: Number
+  haystack_unit: '%'
+
+# ---------- Mixed ----------
+- id: hs:mat
+  pattern: '(?i)(?<![A-Za-z])(mat|mixed[_ ]?air[_ ]?temp)(?![A-Za-z])'
+  haystack_tags: [point, sensor, mixed, air, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+# ---------- Discharge / Supply ----------
+- id: hs:dat
+  pattern: '(?i)(?<![A-Za-z])(dat|discharge[_ ]?air[_ ]?temp|sat|supply[_ ]?air[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  haystack_tags: [point, sensor, discharge, air, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:saf
+  pattern: '(?i)(?<![A-Za-z])(saf|supply[_ ]?air[_ ]?flow)(?![A-Za-z])'
+  haystack_tags: [point, sensor, supply, air, flow]
+  haystack_kind: Number
+  haystack_unit: 'cfm'
+
+- id: hs:supply_fan
+  pattern: '(?i)(?<![A-Za-z])(supply[_ ]?fan|sa[_ ]?fan|sf)(?![A-Za-z])'
+  object_types: [binary-input, binary-output, binary-value]
+  haystack_tags: [point, sensor, supply, fan, run, cmd]
+  haystack_kind: Bool
+
+# ---------- Return ----------
+- id: hs:rat
+  pattern: '(?i)(?<![A-Za-z])(rat|return[_ ]?air[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  haystack_tags: [point, sensor, return, air, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+# ---------- Zone ----------
+- id: hs:zone_temp
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?temp|znt|space[_ ]?temp|room[_ ]?temp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  haystack_tags: [point, sensor, zone, air, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:zone_setpoint
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?(temp[_ ]?)?(setpoint|sp|stpt))(?![A-Za-z])'
+  haystack_tags: [point, sp, zone, air, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:zone_co2
+  pattern: '(?i)(?<![A-Za-z])(zone[_ ]?co2|co2)(?![A-Za-z])'
+  units: ['ppm']
+  haystack_tags: [point, sensor, zone, air, co2, concentration]
+  haystack_kind: Number
+  haystack_unit: 'ppm'
+
+- id: hs:occ
+  pattern: '(?i)(?<![A-Za-z])(occupancy|occ[_ ]?sensor|occupied)(?![A-Za-z])'
+  object_types: [binary-input, binary-value]
+  haystack_tags: [point, sensor, occupied]
+  haystack_kind: Bool
+
+# ---------- VAV ----------
+- id: hs:vav_damper
+  pattern: '(?i)(?<![A-Za-z])(vav[_ ]?damper|damper[_ ]?pos|dpr[_ ]?pos)(?![A-Za-z])'
+  haystack_tags: [point, sensor, damper, position]
+  haystack_kind: Number
+  haystack_unit: '%'
+
+- id: hs:reheat_valve
+  pattern: '(?i)(?<![A-Za-z])(reheat[_ ]?valve|rh[_ ]?valve|hw[_ ]?valve[_ ]?pos)(?![A-Za-z])'
+  haystack_tags: [point, sensor, reheat, valve, position]
+  haystack_kind: Number
+  haystack_unit: '%'
+
+# ---------- Chilled / Hot water ----------
+- id: hs:chw_supply
+  pattern: '(?i)(?<![A-Za-z])(chw[_ ]?supply|chws[_ ]?temp|chilled[_ ]?water[_ ]?supply)(?![A-Za-z])'
+  haystack_tags: [point, sensor, chilled, water, supply, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:chw_return
+  pattern: '(?i)(?<![A-Za-z])(chw[_ ]?return|chwr[_ ]?temp)(?![A-Za-z])'
+  haystack_tags: [point, sensor, chilled, water, return, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:hw_supply
+  pattern: '(?i)(?<![A-Za-z])(hw[_ ]?supply|hws[_ ]?temp|hot[_ ]?water[_ ]?supply)(?![A-Za-z])'
+  haystack_tags: [point, sensor, hot, water, supply, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+- id: hs:hw_return
+  pattern: '(?i)(?<![A-Za-z])(hw[_ ]?return|hwr[_ ]?temp)(?![A-Za-z])'
+  haystack_tags: [point, sensor, hot, water, return, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'
+
+# ---------- Chiller / Boiler ----------
+- id: hs:chiller_status
+  pattern: '(?i)(?<![A-Za-z])(chiller[_ ]?(status|state|run))(?![A-Za-z])'
+  object_types: [binary-input, binary-value]
+  haystack_tags: [point, sensor, chiller, run]
+  haystack_kind: Bool
+
+- id: hs:boiler_status
+  pattern: '(?i)(?<![A-Za-z])(boiler[_ ]?(status|state|run))(?![A-Za-z])'
+  object_types: [binary-input, binary-value]
+  haystack_tags: [point, sensor, boiler, run]
+  haystack_kind: Bool
+
+# ---------- Pumps ----------
+- id: hs:chw_pump
+  pattern: '(?i)(?<![A-Za-z])(chw[_ ]?pump|chilled[_ ]?water[_ ]?pump)(?![A-Za-z])'
+  haystack_tags: [point, sensor, chilled, water, pump, run]
+  haystack_kind: Bool
+
+- id: hs:hw_pump
+  pattern: '(?i)(?<![A-Za-z])(hw[_ ]?pump|hot[_ ]?water[_ ]?pump)(?![A-Za-z])'
+  haystack_tags: [point, sensor, hot, water, pump, run]
+  haystack_kind: Bool
+
+# ---------- Lighting ----------
+- id: hs:light_status
+  pattern: '(?i)(?<![A-Za-z])(light[_ ]?(status|state)|luminaire[_ ]?status)(?![A-Za-z])'
+  object_types: [binary-input, binary-output, binary-value]
+  haystack_tags: [point, sensor, lighting, run]
+  haystack_kind: Bool
+
+- id: hs:light_dim
+  pattern: '(?i)(?<![A-Za-z])(dim(ming)?[_ ]?(level|setpoint|sp)|light[_ ]?level)(?![A-Za-z])'
+  haystack_tags: [point, sensor, lighting, level]
+  haystack_kind: Number
+  haystack_unit: '%'
+
+# ---------- Metering ----------
+- id: hs:electric_meter
+  pattern: '(?i)(?<![A-Za-z])(electric[_ ]?(meter|kwh|consumption)|kwh[_ ]?meter|power[_ ]?meter)(?![A-Za-z])'
+  units: ['kWh', 'Wh', 'MWh', 'kW', 'watt', 'kilowatt']
+  haystack_tags: [point, sensor, elec, energy, meter]
+  haystack_kind: Number
+  haystack_unit: 'kWh'
+
+- id: hs:water_meter
+  pattern: '(?i)(?<![A-Za-z])(water[_ ]?(meter|consumption|flow))(?![A-Za-z])'
+  units: ['gallons', 'liters', 'm3']
+  haystack_tags: [point, sensor, water, volume, meter]
+  haystack_kind: Number
+  haystack_unit: 'gallons'
+
+- id: hs:gas_meter
+  pattern: '(?i)(?<![A-Za-z])(gas[_ ]?(meter|consumption|flow))(?![A-Za-z])'
+  units: ['therms', 'kBtu', 'cf']
+  haystack_tags: [point, sensor, gas, volume, meter]
+  haystack_kind: Number
+  haystack_unit: 'therms'
+
+# ---------- Equipment ----------
+- id: hs:ahu
+  pattern: '(?i)(?<![A-Za-z])(ahu|air[_ ]?handler|air[_ ]?handling[_ ]?unit)(?![A-Za-z])'
+  haystack_tags: [equip, ahu]
+  haystack_kind: Marker
+
+- id: hs:rtu
+  pattern: '(?i)(?<![A-Za-z])(rtu|rooftop[_ ]?unit)(?![A-Za-z])'
+  haystack_tags: [equip, rtu]
+  haystack_kind: Marker
+
+- id: hs:fcu
+  pattern: '(?i)(?<![A-Za-z])(fcu|fan[_ ]?coil[_ ]?unit)(?![A-Za-z])'
+  haystack_tags: [equip, fcu]
+  haystack_kind: Marker
+
+# ---------- Pressure ----------
+- id: hs:duct_pressure
+  pattern: '(?i)(?<![A-Za-z])(duct[_ ]?(static[_ ]?)?pressure|dsp|static[_ ]?pressure)(?![A-Za-z])'
+  units: ['inWC', '"wc', 'inH2O', 'Pa']
+  haystack_tags: [point, sensor, duct, static, pressure]
+  haystack_kind: Number
+  haystack_unit: 'inH₂O'
+
+# ---------- Generic temperature catch-all ----------
+- id: hs:generic_temp
+  pattern: '(?i)(?<![A-Za-z])(temp(erature)?|tmp)(?![A-Za-z])'
+  units: ['degF', 'degC', '°F', '°C', 'fahrenheit', 'celsius']
+  haystack_tags: [point, sensor, temp]
+  haystack_kind: Number
+  haystack_unit: '°F'

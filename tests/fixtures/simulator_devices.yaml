@@ -1,0 +1,163 @@
+# Synthetic HVAC building topology used by the bacpypes3 simulator + integration tests.
+#
+# This file defines a small mixed-vendor-shape building so the v0.1 test
+# surface exercises discovery + enumeration + tagging end-to-end without
+# needing real hardware.
+
+devices:
+  # Air-handling unit
+  - device_instance: 200001
+    device_name: "AHU-1"
+    vendor_id: 999
+    vendor_name: "Simulator"
+    model_name: "SIM-AHU"
+    objects:
+      - type: analog-input
+        instance: 1
+        name: "OAT"
+        description: "Outside air temperature"
+        units: "degF"
+        present_value: 72.5
+      - type: analog-input
+        instance: 2
+        name: "DAT"
+        description: "Discharge air temperature"
+        units: "degF"
+        present_value: 55.0
+      - type: analog-input
+        instance: 3
+        name: "RAT"
+        description: "Return air temperature"
+        units: "degF"
+        present_value: 74.0
+      - type: analog-input
+        instance: 4
+        name: "MAT"
+        description: "Mixed air temperature"
+        units: "degF"
+        present_value: 68.0
+      - type: analog-value
+        instance: 5
+        name: "Damper_Position"
+        description: "Outside air damper position"
+        units: "percent"
+        present_value: 25.0
+      - type: binary-input
+        instance: 6
+        name: "SF_status"
+        description: "Supply fan status"
+        present_value: true
+
+  # VAV box 1
+  - device_instance: 200002
+    device_name: "VAV-1"
+    vendor_id: 999
+    vendor_name: "Simulator"
+    model_name: "SIM-VAV"
+    objects:
+      - type: analog-input
+        instance: 1
+        name: "zone_temp_1"
+        description: "Zone 1 air temperature"
+        units: "degF"
+        present_value: 71.5
+      - type: analog-value
+        instance: 2
+        name: "zone_temp_sp_1"
+        description: "Zone 1 air temperature setpoint"
+        units: "degF"
+        present_value: 72.0
+      - type: analog-input
+        instance: 3
+        name: "vav_airflow_1"
+        description: "VAV-1 supply airflow"
+        units: "cfm"
+        present_value: 450.0
+      - type: analog-value
+        instance: 4
+        name: "damper_pos_1"
+        description: "VAV-1 damper position"
+        units: "percent"
+        present_value: 60.0
+
+  # VAV box 2
+  - device_instance: 200003
+    device_name: "VAV-2"
+    vendor_id: 999
+    vendor_name: "Simulator"
+    model_name: "SIM-VAV"
+    objects:
+      - type: analog-input
+        instance: 1
+        name: "zone_temp_2"
+        description: "Zone 2 air temperature"
+        units: "degF"
+        present_value: 70.0
+      - type: analog-value
+        instance: 2
+        name: "zone_temp_sp_2"
+        description: "Zone 2 air temperature setpoint"
+        units: "degF"
+        present_value: 71.0
+
+  # Central plant
+  - device_instance: 200004
+    device_name: "Plant"
+    vendor_id: 999
+    vendor_name: "Simulator"
+    model_name: "SIM-PLANT"
+    objects:
+      - type: analog-input
+        instance: 1
+        name: "CHWS_temp"
+        description: "Chilled water supply temperature"
+        units: "degF"
+        present_value: 44.0
+      - type: analog-input
+        instance: 2
+        name: "CHWR_temp"
+        description: "Chilled water return temperature"
+        units: "degF"
+        present_value: 54.0
+      - type: analog-input
+        instance: 3
+        name: "HWS_temp"
+        description: "Hot water supply temperature"
+        units: "degF"
+        present_value: 140.0
+      - type: analog-input
+        instance: 4
+        name: "HWR_temp"
+        description: "Hot water return temperature"
+        units: "degF"
+        present_value: 120.0
+      - type: binary-input
+        instance: 5
+        name: "chiller_status"
+        description: "Chiller run status"
+        present_value: true
+      - type: binary-input
+        instance: 6
+        name: "boiler_status"
+        description: "Boiler run status"
+        present_value: false
+
+  # Metering
+  - device_instance: 200005
+    device_name: "Meter"
+    vendor_id: 999
+    vendor_name: "Simulator"
+    model_name: "SIM-METER"
+    objects:
+      - type: analog-input
+        instance: 1
+        name: "electric_meter_kwh"
+        description: "Building electric kWh"
+        units: "kWh"
+        present_value: 123456.7
+      - type: analog-input
+        instance: 2
+        name: "water_meter"
+        description: "Building water flow"
+        units: "gallons"
+        present_value: 8910.5

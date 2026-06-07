@@ -1,0 +1,36 @@
+# Example config for brick-bacnet-mcp v0.1.
+#
+# Copy to ./config.yaml in your working directory and edit to fit your network.
+
+bacnet:
+  # Pick a free BACnet device instance number unique to your network.
+  # Any unused number in the 0..4194303 range works. 555001 is the default.
+  local_device_instance: 555001
+
+  # Broadcast target for Who-Is requests. Use your subnet broadcast in production
+  # (e.g. 192.168.1.255). The global broadcast 255.255.255.255 works for testing
+  # on flat networks.
+  broadcast_address: 255.255.255.255
+
+  # Local socket bind. 0.0.0.0:47808 listens on all interfaces on the standard
+  # BACnet/IP port.
+  bind_address: 0.0.0.0:47808
+
+  # Property polling cadence in seconds.
+  polling_interval_seconds: 30
+
+  # How long to listen for I-Am replies after each Who-Is broadcast.
+  discovery_timeout_seconds: 5
+
+rules:
+  brick: src/brick_bacnet_mcp/rules/brick_rules.yaml
+  haystack: src/brick_bacnet_mcp/rules/haystack_rules.yaml
+
+mcp:
+  # "stdio" for local MCP hosts (Claude Desktop, Cursor).
+  # "http" for hosted MCP hosts.
+  transport: stdio
+  http_port: 8080
+  http_host: 127.0.0.1
+
+log_level: INFO
