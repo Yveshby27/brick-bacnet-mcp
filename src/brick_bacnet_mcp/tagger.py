@@ -218,7 +218,9 @@ class CoverageReport(BaseModel):
         lines.append(f"Total objects:     {self.total_objects}")
         if self.total_objects == 0:
             lines.append("")
-            lines.append("No objects discovered. Check broadcast_address and discovery_timeout_seconds in your config.")
+            lines.append(
+                "No objects discovered. Check broadcast_address and discovery_timeout_seconds in your config."
+            )
             lines.append("=" * 60)
             return "\n".join(lines)
         lines.append(
@@ -238,16 +240,14 @@ class CoverageReport(BaseModel):
             for entry in self.top_unmatched_names:
                 lines.append(f"  {entry.count:>4}  {entry.name}")
             lines.append("")
-            lines.append(
-                "Tip: extend src/brick_bacnet_mcp/rules/*.yaml to cover these patterns."
-            )
+            lines.append("Tip: extend src/brick_bacnet_mcp/rules/*.yaml to cover these patterns.")
         else:
             lines.append("All objects matched at least one rule.")
         lines.append("")
         if self.rule_hit_counts:
-            top_rules = sorted(
-                self.rule_hit_counts.items(), key=lambda kv: kv[1], reverse=True
-            )[:10]
+            top_rules = sorted(self.rule_hit_counts.items(), key=lambda kv: kv[1], reverse=True)[
+                :10
+            ]
             lines.append("Top rule hits:")
             for rule_id, n in top_rules:
                 lines.append(f"  {n:>4}  {rule_id}")
