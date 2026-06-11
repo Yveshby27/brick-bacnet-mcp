@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "brick-bacnet-mcp"
-version = "0.1.0a0"
+version = "0.1.0a2"
 description = "Read-only BACnet/IP gateway exposing Brick + Project Haystack tagged building topology to LLM agents via MCP"
 readme = "README.md"
 license = {file = "LICENSE"}

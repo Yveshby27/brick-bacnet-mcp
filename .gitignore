@@ -88,3 +88,7 @@ secrets/
 CLAUDE.md
 STATUS.md
 .claude/
+
+# Registry publisher tool (downloaded; not a project asset)
+mcp-publisher
+mcp-publisher.exe

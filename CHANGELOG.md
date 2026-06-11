@@ -6,7 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-(no changes yet since v0.1.0a0)
+(no changes yet since v0.1.0a2)
+
+## [0.1.0a2] - 2026-06-11
+
+Re-release to restore the LICENSE file that was accidentally overwritten during the 0.1.0a1 build.
+
+### Fixed
+- Restored the project's MIT LICENSE file. The 0.1.0a1 build was prepared in a working tree where `mcp-publisher_windows_amd64.tar.gz` (the official MCP registry publisher CLI archive) had been extracted in-place; the tarball's root-level LICENSE silently overwrote the project's LICENSE before the wheel was built and uploaded. As a result, the 0.1.0a1 wheel on PyPI ships with the wrong LICENSE text (an MCP-project licensing transition notice referencing Apache-2.0) instead of MIT. v0.1.0a2 restores the original MIT LICENSE; users should upgrade.
+
+No functional code changes from 0.1.0a1.
+
+## [0.1.0a1] - 2026-06-11
+
+Re-release to satisfy MCP registry PyPI ownership validation.
+
+### Changed
+- README now carries the `mcp-name: io.github.Yveshby27/brick-bacnet-mcp` marker required by the MCP registry to verify PyPI package ownership at publish time.
+
+No functional changes from 0.1.0a0.
 
 ## [0.1.0a0] - 2026-06-06
 

@@ -7,7 +7,7 @@ See https://habchy.dev/research/bacnet-msi-semantic-gap for the research note
 this implementation came out of.
 """
 
-__version__ = "0.1.0a0"
+__version__ = "0.1.0a2"
 
 from brick_bacnet_mcp.models import (
     BACnetDevice,

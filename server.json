@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Yveshby27/brick-bacnet-mcp",
+  "description": "Read-only BACnet/IP MCP gateway with Brick + Haystack semantic tagging at ingest",
+  "repository": {
+    "url": "https://github.com/Yveshby27/brick-bacnet-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://habchy.dev/research/bacnet-msi-semantic-gap",
+  "version": "0.1.0a2",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "brick-bacnet-mcp",
+      "version": "0.1.0a2",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
