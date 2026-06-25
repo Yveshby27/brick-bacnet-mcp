@@ -124,16 +124,25 @@ class Discovery:
         if self._app is None:
             raise RuntimeError("Discovery.start() must be called before discover_once()")
 
-        from bacpypes3.pdu import GlobalBroadcast
+        from bacpypes3.pdu import Address, GlobalBroadcast
+
+        # "255.255.255.255" routes through bacpypes3's IP-level global broadcast.
+        # Any other value (subnet broadcast like 192.168.1.255, or unicast like
+        # 127.0.0.1:47808) is sent as a directed Address. Required on Windows
+        # where the loopback adapter blocks broadcast.
+        if self.config.broadcast_address == "255.255.255.255":
+            target = GlobalBroadcast()
+        else:
+            target = Address(self.config.broadcast_address)
 
         logger.info(
-            "Broadcasting Who-Is to %s; collecting I-Am for %d seconds",
+            "Sending Who-Is to %s; collecting I-Am for %d seconds",
             self.config.broadcast_address,
             self.config.discovery_timeout_seconds,
         )
 
         i_ams = await self._app.who_is(
-            address=GlobalBroadcast(),
+            address=target,
             timeout=self.config.discovery_timeout_seconds,
         )
 

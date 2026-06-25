@@ -147,6 +147,29 @@ async def test_unicast_discovery_finds_simulator(live_simulator: Any) -> None:
         await discovery.stop()
 
 
+async def test_discover_once_unicast_finds_simulator(live_simulator: Any) -> None:
+    """discover_once with a unicast broadcast_address reaches the simulator.
+
+    Regression guard for the Windows-loopback path: bacpypes3 GlobalBroadcast()
+    is unreachable on the loopback adapter, so the gateway has to honor a
+    directly-addressed broadcast_address (here 127.0.0.1:47808) instead.
+    """
+    config = BACnetConfig(
+        local_device_instance=DISC_INSTANCE,
+        broadcast_address=f"127.0.0.1:{SIM_PORT}",
+        bind_address=f"127.0.0.1:{DISC_PORT}",
+        discovery_timeout_seconds=3,
+    )
+    discovery = Discovery(config)
+    await discovery.start()
+    try:
+        devices = await discovery.discover_once()
+        assert len(devices) == 1, f"Expected 1 device, got {len(devices)}"
+        assert devices[0].device_instance == SIM_INSTANCE
+    finally:
+        await discovery.stop()
+
+
 async def test_reader_enumerates_simulator_objects(live_simulator: Any) -> None:
     """Reader.enumerate_objects returns the 4 simulator-defined BACnet objects."""
     from bacpypes3.pdu import Address

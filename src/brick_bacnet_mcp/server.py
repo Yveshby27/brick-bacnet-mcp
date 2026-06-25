@@ -71,9 +71,10 @@ class BrickBACnetServer:
         return self._topology
 
     async def _ensure_topology(self) -> Topology:
-        if self._topology is None:
-            return await self.refresh()
-        return self._topology
+        # v0.1: refresh on every tool call. Caching would freeze present_value
+        # reads and miss devices that come online after the first call. v0.2
+        # candidate: TTL cache that invalidates after polling_interval_seconds.
+        return await self.refresh()
 
     # ---- MCP tool implementations ----
 
