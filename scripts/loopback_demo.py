@@ -25,8 +25,12 @@ from brick_bacnet_mcp.topology import TopologyAssembler
 
 
 SIM_ADDR = "127.0.0.1:47808"
-GATEWAY_PORT = 47809
-GATEWAY_INSTANCE = 555001
+# 47810, not 47809. The Claude Desktop MCP server uses 47809 by default
+# (per the example config.yaml). Using a different port here lets the
+# demo runbook run the MCP server and this loopback script side by side
+# without the OS rejecting the second bind.
+GATEWAY_PORT = 47810
+GATEWAY_INSTANCE = 555002
 
 
 async def unicast_discover(discovery: Discovery) -> list[BACnetDevice]:
